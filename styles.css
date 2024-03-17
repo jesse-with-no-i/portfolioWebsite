@@ -1,0 +1,57 @@
+/* Resetting default margin and padding */
+* {
+    margin: 1;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Applying Verdana font to all text */
+body {
+    font-family: Verdana, sans-serif;
+
+    /* Applying a gradient to the webpage */
+    /* For WebKit (Safari, Chrome, etc.) */
+    background: -webkit-linear-gradient(#CCCCFF, lavender);
+
+    /* For Mozilla Firefox */
+    background: -moz-linear-gradient(#CCCCFF, lavender);
+
+    /* For Opera */
+    background: -o-linear-gradient(#CCCCFF, lavender);
+
+    /* For Internet Explorer 10+ */
+    background: -ms-linear-gradient(#CCCCFF, lavender);
+
+    /* Standard syntax */
+    background: linear-gradient(#CCCCFF, lavender);
+}
+
+/* Styling headers */
+h1, h2, h3, h4, h5, h6 {
+    font-family: Verdana, sans-serif;
+}
+
+/* Styling paragraphs */
+p {
+    font-family: Verdana, sans-serif;
+}
+
+/* Additional styling for navigation links */
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+}
+
+/* Changes the background color of links when hovering over them */
+nav ul li a:hover {
+    background-color: #f0f0f0;
+}
