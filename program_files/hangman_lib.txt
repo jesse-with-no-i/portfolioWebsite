@@ -1,0 +1,189 @@
+.data
+word1: .asciiz "curtain"
+word2: .asciiz "husband"
+word3: .asciiz "uniform" 
+word4: .asciiz "promise"
+word5: .asciiz "article"
+word6: .asciiz "voucher"
+word7: .asciiz "improve"
+word8: .asciiz "formula"
+word9: .asciiz "complex"
+word10: .asciiz "holiday"
+word11: .asciiz "private"
+word12: .asciiz "quarter"
+word13: .asciiz "cruelty"
+word14: .asciiz "dialect"
+word15: .asciiz "graphic"
+
+wrong_list: .asciiz "\nThese are your previous incorrect guesses:  "
+right_list: .asciiz "\nHere's the word so far:  "
+
+man0: .asciiz "  _______\n  |     |\n  |\n  |\n__|__ \n"
+man1: .asciiz "  _______\n  |     |\n  |     0	\n  |\n__|__ \n"  # head
+man2: .asciiz "  _______\n  |     |\n  |     0	\n  |     |\n__|__ \n"	# torso
+man3: .asciiz "  _______\n  |     |\n  |     0	\n  |    /|\n__|__ \n"	# left arm
+man4: .asciiz "  _______\n  |     |\n  |     0	\n  |    /|\\\n__|__ \n"	# right arm
+man5: .asciiz "  _______\n  |     |\n  |     0	\n  |    /|\\\n__|__  / \n"	# left leg
+man6: .asciiz "  _______\n  |     |\n  |     0	\n  |    /|\\\n__|__  / \\\n"	 # right leg
+
+string_array:	# array of words to choose from
+	.word word1, word2, word3, word4, word5, word6, word7, word8, word9, word10, word11, word12, word13, word14, word15
+
+man_array:		# array containing each step of the drawing
+	.word man0, man1, man2, man3, man4, man5, man6
+
+delim: .asciiz ", "
+num_wrong_guesses: .word 0	# number of incorrect guesses
+guesses: .space 24
+blank_word: .asciiz "-------\n"
+
+
+.text
+
+# function to choose a random word and write it to the main file
+.globl rand_string
+rand_string: 
+# Step 1 (no input)
+# Step 2: Business Logic
+li $a1, 15	# chooses a number from 0-14
+li $v0, 42
+syscall
+move $t2, $a0 # random num stored in $t2
+
+la $t0, string_array	# load the array of addresses into $t0
+li $v0, 4
+mult $t2, $v0
+mflo $t2
+add $t0, $t0, $t2	# choose a random index
+
+lw $t1, 0($t0)		# get the string from the random index
+# $t1 now holds the address of the string
+
+# Step 3: Write return values to stack
+sw $t1, 0($sp)
+# Step 4: Return
+jr $ra
+
+
+.globl check_guess
+check_guess: # (output: bool, index)
+# Step 1 (inputs: letter guessed and word)
+lw $a0, 0($sp)    	# guessed letter
+lw $a1, 4($sp)    	# word
+# Step 2: Business Logic
+li $t0, 0 # index counter for word
+li $t1, 0 # counter if correct or wrong
+match_loop:
+	lb $t3, 0($a1)
+	bge $t0, 7, check_done
+	beq $a0, $t3, match
+	addi $t0, $t0, 1
+	addi $a1, $a1, 1
+	b match_loop
+    
+match:
+	addi $t1, $t1, 1
+	b check_done
+    
+check_done:
+# Step 3: Write return values to stack
+sw $t1, 12($sp) # bool
+sw $t0, 8($sp) # index
+# Step 4: Return
+jr $ra
+
+
+.globl correct_guess
+correct_guess: #(input: letter, index) places letter in correct spot
+#use stack
+# Step 1 (inputs: letter guessed and word)
+lw $t0, 0($sp)    # letter    
+lw $t1, 4($sp)    # index
+# Step 2: Business Logic
+#Load address of blank_word
+la $a1, blank_word
+#place letter at blank_word[offset = index]
+add $a1, $a1, $t1
+sb $t0, 0($a1)
+# Step 3: Write return values to stack (no return values)
+# Step 4: Return
+jr $ra
+
+.globl incorrect_guess
+incorrect_guess: # (input: letter, # of incorrect guesses) letter bank for incorrect guesses
+#use stack
+# Step 1 (inputs: letter guessed and word)
+lw $t0, 0($sp)    # letter 
+lw $t1, 4($sp)    # number of incorrect guesses
+# Step 2: Business Logic
+# multiply the number of incorrect guesses by 4 to align with word boundary
+li $v0, 4
+mult $t1, $v0
+mflo $t1
+# add the guess to guesses[num_wrong_guesses]
+la $a2, guesses
+add $a2, $a2, $t1
+sw $t0, -4($a2)
+
+
+# Step 3: Write return values to stack (no return values)
+# Step 4: Return
+jr $ra
+
+
+.globl display_man
+display_man:
+# Step 1: load registers from stack
+lw $t0, 0($sp)
+move $t6, $t0
+# Step 2: Business Logic
+la $a1, man_array
+# multiply incorrect letter counter by 4
+li $v0, 4
+mult $t0, $v0
+mflo $t7
+# increment man_array by the counter
+add $a1, $a1, $t7
+lw $a0, 0($a1)
+# print the man
+li $v0, 4
+syscall
+
+# Print the incorrect letters guessed
+la $a3, guesses
+li $v0, 4
+la $a0, wrong_list
+syscall
+print_wrong_guesses:
+	lw $a0, 0($a3)
+    
+	# print letter
+	li $v0, 11
+	syscall
+    
+	addi $a3, $a3, 4
+	addi $t6, $t6, -1
+    
+	blez $t6, print_done
+    
+	la $a0, delim
+	li $v0, 4
+	syscall
+    
+	b print_wrong_guesses
+    
+print_done:
+
+# print word filled in by correct guesses:
+li $v0, 4
+la $a0, right_list
+syscall
+
+li $v0, 4
+la $a0, blank_word
+syscall
+
+# Step 3: Write return values to stack (no return values)
+# Step 4: Return
+jr $ra
+

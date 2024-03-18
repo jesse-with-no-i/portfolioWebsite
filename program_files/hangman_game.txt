@@ -1,0 +1,171 @@
+.include "hangman_lib.asm"
+
+.data
+
+welcome: .asciiz "Welcome to the game! \n"
+rules: .asciiz "Rules:\n1) The goal is to guess all the letters of a randomly-selected\n   seven-letter word. \n2) If the drawing of the man is complete, you lose! \n3) (Warning: don't guess the same letter twice!)\n"
+letter_prompt: .asciiz "\n\nEnter a letter: "
+correct: .asciiz "\nYour guess was correct!\n"
+incorrect: .asciiz "\nYour guess was incorrect.\n"
+win_prompt: .asciiz "Congratulations, you won!"
+lose_prompt: .asciiz "Sorry, you lost! The word was: "
+
+.text
+
+main:
+
+li $v0, 4
+la $a0, welcome
+syscall
+
+li $v0, 4
+la $a0, rules
+syscall
+
+# Call rand_string to choose random word
+# Step 1: Allocate stack space
+addiu $sp, $sp, -8
+# Step 2: Write inputs and important registers to the stack
+# save 4 bytes for output
+sw $ra, 4($sp)
+# Step 3: Call the function
+jal rand_string
+# Step 4: Read returned values and restore saved registers
+lw $ra, 4($sp)
+lw $t2, 0($sp)	# address of the string chosen
+# Step 5: De-allocate the stack space
+addiu $sp, $sp, 8
+
+
+li $s1, 0	# correct letter counter
+li $s2, 0	# incorrect letter counter
+
+turn_loop:
+
+
+	beq $s1, 7, win		# after 7 correct guesses, branch to win
+	beq $s2, 6, lose	# after 6 incorrect guesses, branch to lose
+	
+	li $v0, 4
+	la $a0, letter_prompt
+	syscall
+
+	li $v0, 12	# read character
+	syscall
+	move $s0, $v0	# character is stored in $s0
+	
+	# call check_guess
+	# Step 1: Allocate stack space
+	addiu $sp, $sp, -20
+
+	# Step 2: Write inputs and important registers to the stack
+	sw $s0, 0($sp)	# guessed character
+	sw $t2, 4($sp)	# word
+	# 8 (index) and 12 (bool) reserved for outputs
+	sw $ra, 16($sp)
+
+	# Step 3: Call the function
+	jal check_guess
+
+	# Step 4: Read returned values and restore saved registers
+	lw $t3, 8($sp)	#
+	lw $t4, 12($sp)
+	lw $ra, 16($sp)
+	# Step 5: De-allocate the stack space
+	addiu $sp, $sp, 20
+
+	
+	add $s1, $s1, $t4	# add bool to correct guesses
+	li $v0, 1
+	sub $v0, $v0, $t4	# 1 - bool
+	add $s2, $s2, $v0	# add (1-bool) to incorrect guesses
+	
+	# if bool is 1 -- correct_guess, otherwise, incorrect_guess
+	bne $t4, 1, wrong
+	
+	# call correct_guess
+	# Step 1: Allocate stack space
+	addiu $sp, $sp, -12
+
+	# Step 2: Write inputs and important registers to the stack
+	sw $s0, 0($sp)	# guessed character
+	sw $t3, 4($sp)	# index
+	sw $ra, 12($sp)
+
+	# Step 3: Call the function
+	jal correct_guess
+
+	# Step 4: Read returned values and restore saved registers
+	lw $ra, 12($sp)
+
+	# Step 5: De-allocate the stack space
+	addiu $sp, $sp, 12
+	
+	# load message into $a0
+	la $a0, correct
+	
+	b done
+	wrong:
+	# the incorrect_guess function call
+  	# Step 1: Allocate stack space
+	addiu $sp, $sp, -12
+
+	# Step 2: Write inputs and important registers to the stack
+	sw $s0, 0($sp)	# guessed character
+	sw $s2, 4($sp)	# number incorrect guess
+	sw $ra, 8($sp)
+
+	# Step 3: Call the function
+	jal incorrect_guess
+
+	# Step 4: Read returned values and restore saved registers
+	lw $ra, 8($sp)
+
+	# Step 5: De-allocate the stack space
+	addiu $sp, $sp, 12
+
+	# load message into $a0
+	la $a0, incorrect
+	
+	done:
+	# print out message
+	li $v0, 4
+	syscall
+	
+	# call display_man
+	# Step 1: Allocate stack space
+	addiu $sp, $sp, -8
+
+	# Step 2: Write inputs and important registers to the stack
+	sw $s2, 0($sp)
+	sw $ra, 4($sp)
+	# Step 3: Call the function
+	jal display_man
+	# Step 4: Read returned values and restore saved registers
+	lw $ra, 4($sp)
+	# Step 5: De-allocate the stack space
+	addiu $sp, $sp, 8
+	
+	# branch to beginning of loop
+	b turn_loop
+
+win:	# message for if the user wins
+li $v0, 4
+la $a0, win_prompt
+syscall
+b finished
+
+lose:	# message for is the user loses
+li $v0, 4
+la $a0, lose_prompt
+syscall
+
+# word is revealed if user loses
+li $v0, 4
+move $a0, $t2
+syscall
+
+finished:
+# terminate program
+li $v0, 10
+syscall
