@@ -55,3 +55,7 @@ nav ul li a {
 nav ul li a:hover {
     background-color: #f0f0f0;
 }
+
+li {
+    padding-bottom: 10px; /* Adjust the value to increase spacing */
+}
