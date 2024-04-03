@@ -20,17 +20,49 @@
         input and solved the board by finding all possible words based on the given
         dictionary. The solve could be saved onto a file for later viewing. It utilized
         recursion to solve the board.</p>
+
     <p>The Dictionary class served two main purposes: it allowed dictionaries to be
         loaded, saved, edited, and copied; it also assisted in solving the board by
         providing checks on the words and keeping track of the amount of words. This
         class is a Tree type class, so all operations on it were written for a tree.</p>
 
+    <p>I utilized several computational techniques and algorithms while completing this
+        project. Two dimensional arrays were used to represent the board.
+        The board solver utilized recursion to implement a depth-first search (DFS).
+        In-order traversal was used for printing tree contents, pre-order
+        was used for making deep copies, and post-order was used for deleting, all of
+        which also utilized recursive formulas.</p>
+
     <p>This was part of an individual assignment for my Data Structures and Algorithms class.
         I was provided with the skeleton of each class (names of methods and attributes).</p>
 
     <h4>Click to download the zip file for this project: </h4>
-    <p><a href="program_files\assignment-3-boggle-jesse-with-no-i-master.zip" download>
-    assignment-3-boggle-jesse-with-no-i-master.zip</a></p>
+    <p><a href="program_files\boggle.zip" download>boggle.zip</a></p>
+
+    <h2>Demo:</h2>
+
+    <h5>Raw word output</h5>
+    <img src="screenshots\boggle_showboard_n.png" alt="Word Output" width=300>
+    <p>The program ran in the console and first asked the user if they wanted to see
+        the Boggle board as a reference when presenting the found words. Here is the
+        result if you choose not to see the board.</p>
+
+    <h5>Board output</h5>
+    <img src="screenshots\boggle_showboard_y1.png" alt="Showboard 1" height=600>
+    <img src="screenshots\boggle_showboard_y2.png" alt="Showboard 2" height=600>
+    <p>If you choose to see the solved board for every word, this is the result.</p>
+
+    <h5>Board Output Explanation</h5>
+    <img src="screenshots\boggle_showboard_y_explain.png" alt="Showboard Explain" width=500>
+    <p>For each output entry, the first line is the word found on the board, the
+        socond line shows the number of words found up to that point, and the
+        following output is the board itself with the used letters quoted. Next to
+        it is a numeric board showing the order in which the letters were visited.</p>
+
+    <h5>Output File</h5>
+    <img src="screenshots\boggle_solve_output_file.png" alt="Output File" width=700>
+    <p>When the program executes, it also saves the output to an external file. The
+        type of output saved depends on the user's choice. </p>
 
     <footer>
         <nav>
