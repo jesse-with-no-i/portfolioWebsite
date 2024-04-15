@@ -10,32 +10,62 @@
 
 <body>
     <header>
-        <h1>Text Replace - A work in progress!</h1>
+        <h1>Text Replace</h1>
     </header>
+
+    <h4>Project Description</h4>
+    <p>Text Replacer is a python-based GUI application that performs several "find
+        and replace" operations on a text file or multiple text files that the user
+        chooses. It is a simple project that I made to address an issue I
+        frequently ran into while taking online notes for my class. </p>
+
+    <p>Since my class used a lot of special characters like Greek letters and
+        mathematical symbols, I would often have to slow down to find the right
+        character and insert in in the middle of taking notes. This caused me to miss
+        parts of the lecture. My solution was to write the name of the symbol that
+        I needed in lieu of the symbol itself, and then find and replace the symbols
+        at the end of the lecture.</p>
+
+    <h4>Top 5 Skills Demonstrated</h4>
+    <ul>
+        <li>- Python Programming</li>
+        <li>- Frontend Development (PyQt5 for Python)</li>
+        <li>- Problem Solving</li>
+        <li>- Object-Oriented Programming</li>
+        <li>- Software Development</li>
+    </ul>
 
     <h4>Visit the GitHub repository for this project:</h4>
     <p><a href="https://github.com/jesse-with-no-i/textReplace.git">Text Replace GitHub repository</a></p>
 
-    <h4>Progress and future goals</h4>
-    <p>Currently, I have a working console application and the necessary classes
-        are fully written. I have the frontend of a GUI working, but its functionality
-        is lacking at the moment.</p>
+    <h2>Demo:</h2>
+    <h5>Selecting a text file</h5>
+    <img src="demo_gifs\replacer_selectFile.gif" alt="Select File" width=550>
+    <p>The user can select one text file or multiple. This demonstrates the user
+        selecting just one text file. </p>
 
-    <h4>Snapshot of my progress so far:</h4>
-    <img src="screenshots\textReplace_console_app.png" alt="Console Application" width=500>
-    <p>This is just an example of what the user might see in the console when using the application.</p>
+    <h5>Adding replacement queries</h5>
+    <img src="demo_gifs\replacer_enterReplacements.gif" alt="Add replacements" width="550">
+    <p>The user can enter multiple replacement queries. For each row, every instance of the
+        text on the left found in the text file(s) will be replaced with the text
+        on the right.</p>
 
-    <h4>A use case example:</h4>
-    <img src="screenshots\textReplace_before.png" alt="Before Text Replace" height=200>
-    <img src="screenshots\textReplace_after.png" alt="After Text Replace" height=200>
-    <p>This shows how this application might be used (using an actual example of what
-        inspired me to create this program). The first image is the input file and
-        and the second one is the output file.</p>
+    <h5>Result of first example</h5>
+    <img src="screenshots\textReplace_before.png" alt="Text before" height=150>
+    <img src="screenshots\textReplace_after.png" alt="Text after" height=150>
+    <p>After pressing go, a message box will notify the user that the process is complete
+        and a new file will be created with all of the replacements made. The first picture is the
+        original text file and the second picture is the new text file.</p>
 
-    <h4>The GUI</h4>
-    <img src="screenshots\textReplace_GUI1.png" alt="GUI" height=600>
-    <p>This is what the GUI looks like. It is based on the example I created in my
-        project specifications document. </p>
+    <h5>Selecting multiple files and files with incorrect format</h5>
+    <img src="demo_gifs\replacer_multipleSelections.gif" alt="Select Multiple files" width=550>
+    <p>If the user selects multiple files but some of them are not formatted as .txt
+        files, only the text files will be used and an error message will appear.</p>
+
+    <h5>Adding and deleting rows</h5>
+    <img src="demo_gifs\replacer_addDeleteRows.gif" alt="Add and Delete Rows" width=550>
+    <p>The user can add up to 10 rows, and can also delete all rows except for the first
+        row.</p>
 
     <h4>Project specifications</h4>
     <embed src="textReplace.pdf" type="application/pdf" width="100%" height="600px" />
